@@ -10,14 +10,16 @@ CREATE TABLE City (
 
 
 CREATE TABLE Station (
-	station_id INT IDENTITY(1,1) PRIMARY KEY,
-	station_name VARCHAR(50) NOT NULL,
-	city_id INT NOT NULL,
+    station_id INT IDENTITY(5001,1) PRIMARY KEY,
+    station_name VARCHAR(50) NOT NULL,
+    city_id INT NOT NULL,
+    station_code VARCHAR(10) UNIQUE,
 
-	CONSTRAINT fk_station_city
-		FOREIGN KEY (city_id)
-		REFERENCES City(city_id)
+    CONSTRAINT fk_station_city
+        FOREIGN KEY (city_id)
+        REFERENCES City(city_id)
 );
+
 
 CREATE TABLE Train (
 	train_id INT IDENTITY(1,1) PRIMARY KEY,
