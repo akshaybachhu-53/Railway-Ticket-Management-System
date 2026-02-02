@@ -1,4 +1,3 @@
-// 1. Fix IntelliSense Red Lines (Must be at the very top)
 #define _WIN32_WINNT 0x0A00 
 
 #define WIN32_LEAN_AND_MEAN
@@ -204,6 +203,7 @@ std::string db_get_passengers_by_train(std::string trainId) {
     return rows;
 }
 
+// *** NEW ATOMIC BOOKING FUNCTION (Thread-Safe) ***
 bool db_book_ticket(std::string userId, std::string trainId) {
     SQLHENV hEnv; SQLHDBC hDbc; SQLHSTMT hStmt;
     SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hEnv);
@@ -212,30 +212,25 @@ bool db_book_ticket(std::string userId, std::string trainId) {
     SQLDriverConnect(hDbc, NULL, (SQLCHAR*)CONN_STR, SQL_NTS, NULL, 0, NULL, SQL_DRIVER_NOPROMPT);
     
     SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
-    std::string countQuery = "SELECT COUNT(*) FROM Bookings WHERE TrainID = " + trainId;
-    SQLExecDirect(hStmt, (SQLCHAR*)countQuery.c_str(), SQL_NTS);
-    int passengerCount = 0;
-    SQLLEN ind;
-    if (SQLFetch(hStmt) == SQL_SUCCESS) SQLGetData(hStmt, 1, SQL_C_LONG, &passengerCount, 0, &ind);
-    SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 
-    // 3. Use Config Limit
-    if (passengerCount >= MAX_SEATS_PER_TRAIN) {
-        SQLDisconnect(hDbc);
-        SQLFreeHandle(SQL_HANDLE_DBC, hDbc);
-        SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
-        return false;
-    }
+    // ATOMIC SQL: "Insert ONLY if Count < MAX_SEATS"
+    // This prevents race conditions where two threads read '49' at the same time.
+    std::string query = 
+        "INSERT INTO Bookings (UserID, TrainID, Status) "
+        "SELECT " + userId + ", " + trainId + ", 'CONFIRMED' "
+        "WHERE (SELECT COUNT(*) FROM Bookings WHERE TrainID = " + trainId + ") < " + std::to_string(MAX_SEATS_PER_TRAIN);
 
-    SQLAllocHandle(SQL_HANDLE_STMT, hDbc, &hStmt);
-    std::string query = "INSERT INTO Bookings (UserID, TrainID, Status) VALUES (" + userId + ", " + trainId + ", 'CONFIRMED')";
     SQLExecDirect(hStmt, (SQLCHAR*)query.c_str(), SQL_NTS);
+
+    SQLLEN rowsAffected = 0;
+    SQLRowCount(hStmt, &rowsAffected);
 
     SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
     SQLDisconnect(hDbc);
     SQLFreeHandle(SQL_HANDLE_DBC, hDbc);
     SQLFreeHandle(SQL_HANDLE_ENV, hEnv);
-    return true;
+
+    return (rowsAffected > 0);
 }
 
 void db_add_train(std::string name, std::string srcId, std::string destId, std::string date, std::string price, std::string seats) {
