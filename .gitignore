@@ -1,0 +1,29 @@
+# --- Compiled Binaries ---
+*.exe
+*.o
+*.obj
+*.dll
+
+# --- Specific Project Executables ---
+backend/app.exe
+backend/setup.exe
+
+# --- VS Code & IDE Settings ---
+.vscode/
+.vs/
+*.suo
+*.user
+*.pdb
+*.ilk
+
+# --- Database Files ---
+*.mdf
+*.ldf
+*.log
+
+# --- Build Folders (if you create them) ---
+bin/
+dist/
+
+backend/httplib.h
+backend/crow_all.h

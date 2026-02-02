@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Registration</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #2c3e50; }
+        .box { background: white; padding: 40px; border-radius: 8px; width: 300px; text-align: center; border-top: 5px solid #e74c3c; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background: #c0392b; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2 style="color:#c0392b">👮 New Admin</h2>
+        <form action="/register" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            
+            <p style="font-size:12px; color:red;">Security Clearance Required:</p>
+            <input type="password" name="secret_key" placeholder="Enter Master Key" required>
+            
+            <input type="hidden" name="role" value="admin">
+            <button type="submit">Register Admin</button>
+        </form>
+    </div>
+</body>
+</html>

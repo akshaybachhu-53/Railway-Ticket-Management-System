@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <style>
+        body { font-family: sans-serif; padding: 30px; background-color: #f9f9f9; }
+        .card { background: white; border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        
+        button { padding: 8px 15px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #218838; }
+        input { padding: 8px; width: 100px; }
+    </style>
+</head>
+<body>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Welcome, {{USERNAME}}</h1>
+        <a href="/" style="color:red; text-decoration:none; font-weight:bold;">Logout</a>
+    </div>
+    
+    <div class="card">
+        <h3>🚆 Available Trains</h3>
+        <p>Check the ID below and enter it in the booking box.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Train ID</th>
+                    <th>Train Name</th>
+                    <th>Route</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Seats</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{TRAIN_LIST}}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>🎫 Book a Ticket</h3>
+        <form action="/book" method="POST" style="display:flex; gap:10px; align-items:center;">
+            <input type="hidden" name="user_id" value="{{USER_ID}}">
+            
+            <label><strong>Enter Train ID:</strong></label>
+            <input type="number" name="train_id" placeholder="e.g. 1" required>
+            
+            <button type="submit">Book Now</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>📜 Your Travel History</h3>
+        <table>
+            <tr><th>Booking ID</th><th>Train Details</th><th>Status</th></tr>
+            {{HISTORY_TABLE}}
+        </table>
+    </div>
+</body>
+</html>

@@ -1,80 +1,62 @@
-CREATE DATABASE RailwayDB;
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'RailwayDB')
+BEGIN
+    CREATE DATABASE RailwayDB;
+END
 GO
+
 USE RailwayDB;
 GO
 
-CREATE TABLE City (
-	city_id INT IDENTITY(1, 1) PRIMARY KEY,
-	city_name VARCHAR(50) NOT NULL UNIQUE
-);
+DROP TABLE IF EXISTS Bookings; 
+DROP TABLE IF EXISTS Trains; 
+DROP TABLE IF EXISTS Stations;
+DROP TABLE IF EXISTS Users; 
+GO
 
-
-CREATE TABLE Station (
-    station_id INT IDENTITY(5001,1) PRIMARY KEY,
-    station_name VARCHAR(50) NOT NULL,
-    city_id INT NOT NULL,
-    station_code VARCHAR(10) UNIQUE,
-
-    CONSTRAINT fk_station_city
-        FOREIGN KEY (city_id)
-        REFERENCES City(city_id)
-);
-
-
-CREATE TABLE Train (
-	train_id INT IDENTITY(1,1) PRIMARY KEY,
-	train_name VARCHAR(100) NOT NULL,
-	total_seats INT NOT NULL CHECK (total_seats > 0)
-);
-
-CREATE TABLE TrainSchedule (
-	schedule_id INT IDENTITY(1,1) PRIMARY KEY,
-	train_id INT NOT NULL,
-	source_station_id INT NOT NULL,
-	destination_station_id INT NOT NULL,
-	journey_date DATE NOT NULL,
-	available_seats INT NOT NULL,
-
-	CONSTRAINT fk_schedule_train
-		FOREIGN KEY (train_id)
-		REFERENCES Train(train_id),
-
-	CONSTRAINT fk_schedule_source
-        FOREIGN KEY (source_station_id)
-        REFERENCES Station(station_id),
-
-    CONSTRAINT fk_schedule_destination
-        FOREIGN KEY (destination_station_id)
-        REFERENCES Station(station_id),
-
-    CONSTRAINT chk_different_stations
-        CHECK (source_station_id <> destination_station_id)
-);
-
+-- Create Users Table
 CREATE TABLE Users (
-	user_id INT IDENTITY(1,1) PRIMARY KEY,
-	name VARCHAR(100) NOT NULL,
-	phone VARCHAR(15) UNIQUE
+    UserID INT IDENTITY(1,1) PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL UNIQUE,
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,
+    IsAdmin BIT NOT NULL DEFAULT 0,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
 );
 
-CREATE TABLE Ticket (
-	ticket_id INT identity(1,1) PRIMARY KEY,
-	user_id INT NOT NULL,
-	schedule_id INT NOT NULL,
-	seats_booked INT NOT NULL CHECK (seats_booked > 0),
-	booking_status VARCHAR(20) DEFAULT 'CONFIRMED',
-
-	CONSTRAINT fk_ticket_user
-        FOREIGN KEY (user_id)
-        REFERENCES Users(user_id),
-
-    CONSTRAINT fk_ticket_schedule
-        FOREIGN KEY (schedule_id)
-        REFERENCES TrainSchedule(schedule_id)
+-- Create Stations Table
+CREATE TABLE Stations (
+	StationID INT IDENTITY(1,1) PRIMARY KEY,
+	StationName VARCHAR(50) NOT NULL UNIQUE
 );
-SELECT TABLE_NAME
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_TYPE = 'BASE TABLE';
 
-SELECT name
-FROM sys.tables;
+-- Create Trains Table
+CREATE TABLE Trains (
+	TRAINID INT PRIMARY KEY IDENTITY(1, 1),
+	TrainName VARCHAR(100) NOT NULL,
+	SourceStationID INT NOT NULL,
+	DestStationID INT NOT NULL,
+	TravelDate DATE NOT NULL,
+	TotalSeats INT DEFAULT 50,
+	Price DECIMAL(10, 2) NOT NULL,
+
+	CONSTRAINT fk_trains_source
+		FOREIGN KEY (SourceStationID) REFERENCES Stations(StationID),
+	CONSTRAINT fk_trains_destination
+		FOREIGN KEY (DestStationID) REFERENCES Stations(StationID),
+	CONSTRAINT chk_diff_stations
+		CHECK (SourceStationID <> DestStationID)
+);
+
+
+-- Create Bookings Table
+CREATE TABLE Bookings (
+	BookingID INT PRIMARY KEY IDENTITY(1, 1),
+	UserID INT NOT NULL,
+	TrainID INT NOT NULL,
+	Booking DATETIME DEFAULT GETDATE(),
+	Status VARCHAR(20) DEFAULT 'CONFIRMED',
+
+	FOREIGN KEY (UserID) REFERENCES Users(UserID),
+	FOREIGN KEY (TrainID) REFERENCES Trains(TrainID)
+);
+GO

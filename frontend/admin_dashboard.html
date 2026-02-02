@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        body { font-family: sans-serif; padding: 30px; background-color: #fff8e1; }
+        .card { background: white; padding: 20px; border: 1px solid #ccc; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background: #ffc107; }
+        input, select { padding: 8px; margin-right: 10px; margin-bottom: 10px; }
+        button { padding: 8px 15px; background: #ffc107; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #e0a800; }
+        .success-msg { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>👮 Admin Dashboard</h1>
+        <a href="/" style="color:red; text-decoration:none; font-weight:bold;">Logout</a>
+    </div>
+    
+    <div class="card">
+        <h3>➕ Add New Train</h3>
+        <form action="/add_train" method="POST">
+            <input type="text" name="train_name" placeholder="Train Name (e.g. Express)" required>
+            
+            <input type="number" name="source_id" placeholder="Source Station ID" required>
+            <input type="number" name="dest_id" placeholder="Dest Station ID" required>
+            
+            <input type="date" name="travel_date" required>
+            <input type="number" name="price" placeholder="Price (e.g. 50.00)" step="0.01" required>
+            <input type="number" name="seats" placeholder="Total Seats" value="50" required>
+            
+            <br>
+            <button type="submit">Create Train</button>
+        </form>
+        <p style="font-size:12px; color:#666;">(Note: Use ID 1 for NY, 2 for Boston, 3 for DC, 4 for Philly)</p>
+    </div>
+
+    <div class="card">
+        <h3>🔍 Search Passengers by Train</h3>
+        <form action="/admin_search" method="POST">
+            <label>Enter Train ID:</label>
+            <input type="number" name="train_id" placeholder="e.g., 1" required>
+            <button type="submit">Get Passenger List</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Results:</h3>
+        <table>
+            <tr><th>Passenger Name</th><th>Status</th></tr>
+            {{PASSENGER_LIST}}
+        </table>
+    </div>
+</body>
+</html>

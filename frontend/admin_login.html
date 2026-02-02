@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #2c3e50; }
+        .box { background: white; padding: 40px; border-radius: 8px; width: 300px; text-align: center; border-top: 5px solid #e74c3c; }
+        h2 { color: #c0392b; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+        button { width: 100%; padding: 10px; background: #c0392b; color: white; border: none; cursor: pointer; }
+        button:hover { background: #a93226; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>👮 Admin Portal</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Admin Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="hidden" name="role" value="admin">
+            <button type="submit">Admin Access</button>
+        </form>
+        <p><a href="/admin/signup">Register New Admin</a></p>
+        <br>
+        <a href="/" style="font-size: 12px; color: #666;">Back to User Login</a>
+    </div>
+</body>
+</html>

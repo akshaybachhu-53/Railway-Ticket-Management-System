@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IronTrack Railway Systems</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* Blue Gradient */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            color: white;
+        }
+        .container { 
+            text-align: center; 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 50px; 
+            border-radius: 15px; 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 { font-size: 3rem; margin-bottom: 10px; }
+        p { font-size: 1.2rem; margin-bottom: 40px; color: #dcdcdc; }
+        
+        .btn-group { display: flex; gap: 20px; justify-content: center; }
+        
+        .card {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 150px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .icon { font-size: 40px; display: block; margin-bottom: 10px; }
+        .label { font-weight: bold; font-size: 18px; }
+
+        /* Admin Card Style */
+        .admin-card:hover { background: #ffebee; color: #c62828; }
+        /* User Card Style */
+        .user-card:hover { background: #e3f2fd; color: #1565c0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚆 IronTrack</h1>
+        <p>Advanced Railway Management System</p>
+
+        <div class="btn-group">
+            <a href="/user/login" class="card user-card">
+                <span class="icon">👤</span>
+                <span class="label">Passenger</span>
+            </a>
+
+            <a href="/admin/login" class="card admin-card">
+                <span class="icon">👮</span>
+                <span class="label">Administrator</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
